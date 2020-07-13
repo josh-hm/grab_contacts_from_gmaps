@@ -503,10 +503,12 @@ if __name__ == '__main__':
             sys.exit(1)
         print('Working...')
         grab_data_for_zip(establishment, zipcode, state_code)
+        print()
         sys.exit(0)
     elif answer.startswith('s'):
         print('Working...')
         grab_data_for_state(establishment, state_code)
+        print()
         sys.exit(0)
     else:
         print('Invalid answer\n')
