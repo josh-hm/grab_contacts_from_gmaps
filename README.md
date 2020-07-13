@@ -94,15 +94,15 @@ repository/
 |---+data/
     |
     |---+[establishment]/
-    |   |
-    |   |---+[state_code]/
-    |       |
-    |       |---[zip_code].csv
-    |       |---[state_code]_all_zipcodes.csv
-    |   
-    |---+logs/
-	|
-	|---+[state_code]/
+        |
+        |---+[state_code]/
+        |   |
+        |   |---[zip_code].csv
+        |   |---[state_code]_all_zipcodes.csv
+        |   
+        |---+logs/
 	    |
-	    |---logfile
+ 	    |---+[state_code]/
+	        |
+	        |---logfile
 ```
