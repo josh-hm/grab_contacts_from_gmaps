@@ -2,4 +2,6 @@
 *~
 \#*\#
 .\#*
+*.ga_key
 data/*
+.DS_Store
