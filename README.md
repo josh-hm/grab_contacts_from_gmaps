@@ -88,15 +88,22 @@ File structure works as follows
 ```
 repository/
 |
-|---+[establishment]/
-|   |
-|   |---+[state_code]/
-|       |
-|       |---[zip_code].csv
-|       |---[state_code]_all_zipcodes.csv
+.
+.
+.
 |
-|
-|---+logs/
+|---+data/
+    |
+    |
+    |---+[establishment]/
+    |   |
+    |   |---+[state_code]/
+    |       |
+    |       |---[zip_code].csv
+    |       |---[state_code]_all_zipcodes.csv
+    |   
+    |
+    |---+logs/
     |
     |---+[state_code]/
         |
