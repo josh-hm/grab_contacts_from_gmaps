@@ -1,12 +1,12 @@
 # Introduction
 
-I created the code to help with a number of marketing inititatives
+I created the code to help with a number of marketing initiatives
 that required getting the contact details for various types of
 businesses within a certain area.
 
 The python file *grab\_contacts\_from\_gmaps.py* can be used via a CLI
 or a Python interpretor to generate a CSV file containing the contact
-infromation for all establishments from Google Places for a given US
+information for all establishments from Google Places for a given US
 state or zipcode.
 
 To use it yourself, you will need to create your own Google API key,
