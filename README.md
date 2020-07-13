@@ -14,7 +14,7 @@ access to a CLI, and Python 3.
 
 The Google API key is free and will give you a fair number of free
 calls per day, such that you should be able to grab many contacts from
-a given state (or all from a given zipode) for various types of
+a given state (or all from a given zipcode) for various types of
 establishments.
 
 In this repo, I have also included a state--zipcode CSV that will
@@ -91,9 +91,7 @@ repository/
 .
 .
 .
-|
 |---+data/
-    |
     |
     |---+[establishment]/
     |   |
@@ -102,7 +100,6 @@ repository/
     |       |---[zip_code].csv
     |       |---[state_code]_all_zipcodes.csv
     |   
-    |
     |---+logs/
 	|
 	|---+[state_code]/
