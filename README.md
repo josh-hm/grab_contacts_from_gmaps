@@ -104,8 +104,8 @@ repository/
     |   
     |
     |---+logs/
-    |
-    |---+[state_code]/
-        |
-	|---logfile
+	  |
+	  |---+[state_code]/
+	  |
+	  |---logfile
 ```
