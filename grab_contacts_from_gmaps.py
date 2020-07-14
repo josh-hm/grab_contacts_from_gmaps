@@ -412,7 +412,7 @@ def concatenate_zips_for_state(establishment, state_code):
             df = pd.concat((df, temp_df))
 
     df = df.drop_duplicates()
-    out_file = os.path.join(folder_path, '{}_all_zipcodes.csv'.format(statecode))
+    out_file = os.path.join(folder_path, '{}_all_zipcodes.csv'.format(state_code))
     df.to_csv(out_file, index=False)
     print('Full {} csv for {} created'.format(establishment, state_code))
     
