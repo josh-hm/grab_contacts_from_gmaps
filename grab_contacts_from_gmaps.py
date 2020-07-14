@@ -15,7 +15,6 @@ import time
 
 from bs4 import BeautifulSoup
 from geopy.distance import great_circle
-import numpy as np
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
@@ -26,14 +25,11 @@ from requests.adapters import HTTPAdapter
 class ApiStatusError(Exception):
     pass
 
-
 class DataFileExistsError(Exception):
     pass
 
-
 class LogFolderError(Exception):
     pass
-
 
 class ContinueAnyway(Exception):
     pass
@@ -89,6 +85,7 @@ def get_key(file_name='./.ga_key'):
             pass
 
     return key
+
 
 def accepted_state_code(state_code):
 
@@ -188,10 +185,7 @@ def make_soup(base_query, payload, rtrn_url=False):
     soup = BeautifulSoup(page.text, 'lxml')
     check_status(soup, page.url)
 
-    if rtrn_url:
-        return (soup, page.url)
-    else:
-        return soup
+    return (soup, page.url) if rtrn_url else soup
 
 
 def get_radius(geo_data):
@@ -489,10 +483,8 @@ if __name__ == '__main__':
           './[establishment]/[state]/[state]_all_zipcodes.csv\n\n')
 
     establishment = input('Establishment type?: ').lower()
-    accepted_establishment(establishment)
 
     state_code = input('Two-letter state code: ').upper()
-    accepted_state_code(state_code)
 
     answer = input('Search the entire state, or a specific zipcode? '
                        '[(z)ip/(s)tate]: ').lower()
