@@ -76,8 +76,6 @@ def get_key(file_name='./.ga_key'):
             key = getpass(prompt='Type / Paste API key and then press enter/return: ')
             set_key(key)
             print('Saved to filepath default, "./.ga_key"')
-            
-            return key
 
         else:
             print('Cannot run without a Google API key. '
@@ -399,6 +397,28 @@ def check_current_data(zip_list, establishment, state_code):
     return (zip_list, zip_num_diff_1 + zip_num_diff_2)
 
 
+def concatenate_zips_for_state(establishment, state_code):
+
+    '''Merges every zipcode CSV for a given place-type and state
+    '''
+
+    df = pd.DataFrame(columns=['establishment', 'phone_number', 'address', 'city',
+                               'state', 'zipcode', 'website', 'data_source'])
+    folder_path = os.path.join('data', establishment, state_code)
+    for root, dirs, files in os.walk(folder_path):
+        for f in files:
+            f_path = os.path.join(folder_path, f)
+            temp_df = pd.read_csv(f_path)
+            df = pd.concat((df, temp_df))
+
+    df = df.drop_duplicates()
+    out_file = os.path.join(folder_path, '{}_all_zipcodes.csv'.format(statecode))
+    df.to_csv(out_file, index=False)
+    print('Full {} csv for {} created'.format(establishment, state_code))
+    
+    return
+
+
 # MAIN
 
 def grab_data_for_zip(establishment, zipcode, state_code):
@@ -447,16 +467,7 @@ def grab_data_for_state(establishment, state_code):
         grab_data_for_zip(establishment, z, state_code)
         print('|{}/{}|'.format(e + zip_num_diff + 1, zip_num_all))
 
-    concatenation_call = ''.join(("awk 'FNR==1 && NR!=1{next;}{print}' ",
-                                  "data/{}/{}/*.csv > ".format(establishment,
-                                                               state_code),
-                                  "data/{}/{}/{}".format(establishment,
-                                                         state_code,
-                                                         state_code),
-                                 "_all_zipcodes.csv"))
-    os.system(concatenation_call)
-
-    print('{} csv for {} created'.format(establishment, state_code))
+    concatenate_zips_for_state(establishment, state_code)
     return
 
 
