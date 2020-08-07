@@ -259,7 +259,7 @@ def get_place_ids(establishment, latitude, longitude, radius, err_count=0):
 
 def remove_duplicates(place_ids):
 
-    '''Returns a dedupped list of place_ids
+    '''Returns a deduplicated list of place_ids
 
     This function is necessary as the areas of search
     created by get_coordinates() may overlap.
@@ -270,7 +270,7 @@ def remove_duplicates(place_ids):
 
 def get_address_components(address_components):
 
-    '''Returns a AddressComponents namedtuple from the given componments.
+    '''Returns a AddressComponents namedtuple from the given components.
     '''
 
     address, city, state, zipcode = '', '', '', ''
@@ -333,7 +333,7 @@ def write_to_log(establishment, zipcode, state_code):
 
 def write_establishment_data(data, establishment, zipcode, state_code):
 
-    '''Write concatenated data to csv file
+    '''Write concatenated data to CSV file
     '''
 
     header = ['establishment', 'phone_number', 'address',
@@ -378,7 +378,7 @@ def check_current_data(zip_list, establishment, state_code):
         zip_list.remove(z)
     zip_num_wo_created = len(zip_list)
     zip_num_diff_1 = zip_num_all - zip_num_wo_created
-    print('{} zipcode csvs already created for {}'.format(zip_num_diff_1,
+    print('{} zipcode CSVs already created for {}'.format(zip_num_diff_1,
                                                           state_code))
 
     # Remove already tried zipcodes from zip_list
@@ -416,7 +416,7 @@ def concatenate_zips_for_state(establishment, state_code):
     df = df.drop_duplicates()
     out_file = os.path.join(folder_path, '{}_all_zipcodes.csv'.format(state_code))
     df.to_csv(out_file, index=False)
-    print('Full {} csv for {} created'.format(establishment, state_code))
+    print('Full {} CSV for {} created'.format(establishment, state_code))
     
     return
 
@@ -438,10 +438,10 @@ def find_email_addresses(soup, url):
 
     for page in contact_pages:
         soup_2 = make_soup(page)
-        link_list_2 = [a.get('href') for a in soup.find_all('a')
+        link_list_2 = [a.get('href') for a in soup_2.find_all('a')
                        if a.get('href') is not None]
         potential_emails_2 = re.findall(r'([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)',
-                                            ' '.join(link_list))
+                                            ' '.join(link_list_2))
         potential_emails.extend(potential_emails_2)
 
     set_emails = list(set(potential_emails))
@@ -495,7 +495,7 @@ def append_emails_to_copy_of_csv(csv_path, url_column_name='website'):
 
 def grab_data_for_zip(establishment, zipcode, state_code):
 
-    '''Create a csv file containing contact data for a given place-type and zipcode
+    '''Create a CSV file containing contact data for a given place-type and zipcode
     '''
 
     accepted_establishment(establishment)
@@ -511,7 +511,7 @@ def grab_data_for_zip(establishment, zipcode, state_code):
         created = write_establishment_data(establishment_data, establishment,
                                            zipcode, state_code)
         if created:
-            print('{} csv for zipcode {} created  '.format(establishment, zipcode),
+            print('{} CSV for zipcode {} created  '.format(establishment, zipcode),
                   end='')
         else:
             print('no {} found for zipcode {}     '.format(establishment, zipcode),
@@ -573,7 +573,7 @@ if __name__ == '__main__':
                        '[(z)ip/(s)tate]: ').lower()
     if answer.startswith('z'):
         zipcode = input('5-digit zipcode: ')
-        if not re.match('\d\d\d\d\d', zipcode):
+        if not re.match(r'\d\d\d\d\d', zipcode):
             print('Invalid zipcode\n')
             sys.exit(1)
         print('Working...')
