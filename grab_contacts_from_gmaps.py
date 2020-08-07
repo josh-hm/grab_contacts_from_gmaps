@@ -1,5 +1,5 @@
 '''This contains a script to generate a CSV file containing the
-contact infromation for all establishments from Google Places for a
+contact information for all establishments from Google Places for a
 given US state or zipcode.
 
 Please see the README for more information.
@@ -18,6 +18,9 @@ from geopy.distance import great_circle
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
+from tqdm import tqdm
+from urllib.parse import urlparse
+
 
 
 # ERRORS
@@ -100,7 +103,7 @@ def accepted_state_code(state_code):
 
     if state_code not in accepted_state_codes:
         print('Invalid state code. Please use a type from '
-              'the fllowing list\n')
+              'the following list\n')
         print('{}\n'.format(accepted_state_codes))
 
         raise UnacceptedInput
@@ -172,12 +175,12 @@ def check_status(soup, url):
         raise ApiStatusError
 
 
-def make_soup(base_query, payload, rtrn_url=False):
+def make_soup(base_query, payload='', rtrn_url=False):
 
     '''Returns a parsable BeautifulSoup object from a HTTP request query
     '''
     try:
-        page = requests.get(base_query, params=payload)
+        page = requests.get(base_query, params=payload, timeout=10)
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         raise
     soup = BeautifulSoup(page.text, 'lxml')
@@ -240,7 +243,6 @@ def get_place_ids(establishment, latitude, longitude, radius, err_count=0):
 
     place_ids = list()
     next_page = True
-    page_token = ''
 
     while next_page:
         soup = make_soup(base_query, payload)
@@ -305,7 +307,7 @@ def get_establishment_data(place_id, err_count=0):
 
     establishment = get_string(soup.find_all('name')[0])
     raw_number = get_string(soup.formatted_phone_number)
-    phone_number = re.sub('\D', '', raw_number) if raw_number else ''
+    phone_number = re.sub(r'\D', '', raw_number) if raw_number else ''
     addr = get_address_components(soup.find_all('address_component'))
     website = get_string(soup.website)
 
@@ -419,6 +421,76 @@ def concatenate_zips_for_state(establishment, state_code):
     return
 
 
+def find_email_addresses(soup, url):
+
+    '''Helper for get_emails(), returns email addresses found on a given website and it's contact page
+    '''
+
+    link_list = [a.get('href') for a in soup.find_all('a') if a.get('href') is not None]
+    potential_emails = re.findall(r'([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)',
+                                  ' '.join(link_list))
+
+    contact_paths = [link for link in link_list if (('contact' in link.lower()))]
+    parsed_url = urlparse(url)
+    clean_url = '{p.scheme}://{p.netloc}{p.path}'.format(p=parsed_url)
+    contact_pages = [''.join((clean_url, c_path)) for c_path in contact_paths]
+    contact_pages = list(set(contact_pages))
+
+    for page in contact_pages:
+        soup_2 = make_soup(page)
+        link_list_2 = [a.get('href') for a in soup.find_all('a')
+                       if a.get('href') is not None]
+        potential_emails_2 = re.findall(r'([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)',
+                                            ' '.join(link_list))
+        potential_emails.extend(potential_emails_2)
+
+    set_emails = list(set(potential_emails))
+            
+    return set_emails
+
+
+def get_emails(url):
+
+    '''Returns email addresses found on a given website and it's contact page
+    '''
+
+    try:
+        soup, url = make_soup(url, rtrn_url=True)
+        emails = find_email_addresses(soup, url)
+    except Exception as e:
+        # TODO :: add better error handling
+        print(e)
+        emails = list()
+
+    return emails
+
+
+
+def append_emails_to_copy_of_csv(csv_path, url_column_name='website'):
+
+    '''Creates a copy of the CSV path given "*_with_emails.csv" that includes emails
+    '''
+
+    ext_index = csv_path.find('.csv')
+    new_path = csv_path[:ext_index] + '_with_emails.csv'
+    if os.path.isfile(new_path):
+        print('{} already exists'.format(new_path))
+        return
+    
+    else:
+        print('Generating CSV with emails from {}'.format(csv_path))
+        tqdm.pandas()
+        df = pd.read_csv(csv_path)
+        df['emails'] = df[url_column_name].progress_apply(get_emails)
+        df_emails = pd.DataFrame(df.emails.values.tolist(),
+                                 index=df.index).add_prefix('email_')
+        df = pd.concat((df, df_emails), axis=1)
+        df.to_csv(new_path, index=False)
+        print('CSV with emails created from {}'.format(csv_path))
+        return
+
+
+
 # MAIN
 
 def grab_data_for_zip(establishment, zipcode, state_code):
@@ -435,8 +507,8 @@ def grab_data_for_zip(establishment, zipcode, state_code):
         place_ids = get_place_ids(establishment,
                                   coors.lat, coors.lng,
                                   coors.rad) if coors else list()
-        establisment_data = [get_establishment_data(pid) for pid in place_ids]
-        created = write_establishment_data(establisment_data, establishment,
+        establishment_data = [get_establishment_data(pid) for pid in place_ids]
+        created = write_establishment_data(establishment_data, establishment,
                                            zipcode, state_code)
         if created:
             print('{} csv for zipcode {} created  '.format(establishment, zipcode),
@@ -490,7 +562,7 @@ if __name__ == '__main__':
           'Data will be written to file:\n'
           './[establishment]/[state]/[zipcode].csv\n'
           'If the state option is chosen, a concatenated file will also be '
-          'writen, to file:\n'
+          'written, to file:\n'
           './[establishment]/[state]/[state]_all_zipcodes.csv\n\n')
 
     establishment = input('Establishment type?: ').lower()
@@ -507,10 +579,22 @@ if __name__ == '__main__':
         print('Working...')
         grab_data_for_zip(establishment, zipcode, state_code)
         print()
+        answer = input('Would you like to add related emails? '
+                       '[(y)es/(n)o]').lower()
+        if answer.startswith('y'):
+            csv_file = os.path.join('data', establishment, state_code, zipcode) + '_all_zipcodes.csv'
+            append_emails_to_copy_of_csv(csv_file)
+        print()
         sys.exit(0)
     elif answer.startswith('s'):
         print('Working...')
         grab_data_for_state(establishment, state_code)
+        print()
+        answer = input('Would you like to add related emails? '
+                       '[(y)es/(n)o]').lower()
+        if answer.startswith('y'):      
+            csv_file = os.path.join('data', establishment, state_code, zipcode) + '_all_zipcodes.csv'
+            append_emails_to_copy_of_csv(csv_file)
         print()
         sys.exit(0)
     else:
