@@ -589,38 +589,41 @@ if __name__ == '__main__':
     accepted_country_codes = [c.alpha_2 for c in pycountry.countries]
 
     parser.add_argument('-e', '--establishment', nargs='+', choices=accepted_establishments,
-                        help=str('\nInput one or more of the establishment types listed above '
+                        help=str('Input one or more of the establishment types listed above '
                                  'to determine from which organizations you collect contact '
-                                 'info.  If you use this option you must also specify the '
-                                 'postal code(s) with "-p"/"--postalcode".\n \n'))
+                                 'info.  List here should align with Google\'s Places API '
+                                 'documentation ('
+                                 'https://developers.google.com/places/web-service/supported_types'
+                                 ').  If you use this option you must also specify the '
+                                 'postal code(s) with "-p"/"--postalcode".'))
     parser.add_argument('-p', '--postalcode', nargs='+', metavar='POSTAL CODE',
-                        help=str('\nInput one or more postal codes to determine from which '
+                        help=str('Input one or more postal codes to determine from which '
                                  'postal codes you collect contact info.  If you use this '
                                  'option you must also specify the establishment type(s) with '
-                                 'with "-e"/"--establishment".\n \n'))
+                                 'with "-e"/"--establishment".'))
     parser.add_argument('-s', '--statecode', nargs='?', choices=accepted_state_codes, 
-                        help=str('\nOnly used in conjunction with the "--fullstate" flag, and '
+                        help=str('Only used in conjunction with the "--fullstate" flag, and '
                                  'can only used for the US.  Input one of the state codes to '
-                                 'grab contact info for the chosen establishment(s).\n \n'))
+                                 'grab contact info for the chosen establishment(s).'))
     parser.add_argument('-c', '--countrycode', nargs='?', default='US',
                         choices=accepted_country_codes,
-                        help=str('\nIf you want to search non-US postal codes, input one '
+                        help=str('If you want to search non-US postal codes, input one '
                                  'of the 2-letter country codes listed above.  If you '
                                  'use this option you must also specify the establishment '
                                  'type(s) with "-e"/"--establishment" and postal code(s) '
-                                 'with "-p"/"--postal".\n \n'))
+                                 'with "-p"/"--postal".'))
     parser.add_argument('-a', '--appendonly', nargs='?', metavar='CSV PATH',
-                        help=str('\nIf you want to add emails to an existing contact file, '
+                        help=str('If you want to add emails to an existing contact file, '
                                  'run this option with the path to the CSV file you want to '
-                                 'add emails to.  If used, all other options are ignored.\n \n'))
+                                 'add emails to.  If used, all other options are ignored.'))
     parser.add_argument('-o', '--omitemails', action='store_true',
-                        help=str('\nUse this flag if you\'d like to skip the email scraping '
-                                 'step of the process.\n \n'))
+                        help=str('Use this flag if you\'d like to skip the email scraping '
+                                 'step of the process.'))
     parser.add_argument('-f', '--fullstate', action='store_true',
-                        help=str('\nUse this flag if you\'d like to grab the contact info from '
+                        help=str('Use this flag if you\'d like to grab the contact info from '
                                  'an entire US state.  If you use this option, you must also '
                                  'specify the establishment type(s) with "-e"/"--establishment". '
-                                 'step of the process.\n \n'))
+                                 'step of the process.'))
     
     args = parser.parse_args()
 
