@@ -44,7 +44,7 @@ First, change your working directory to the directory where both this script and
 
 `python3 grab_contact_info.py`
 
-and then follow the prompts to grab contact info from a single US postal code.  If you want to learn how to use the other functions, such as searching multiple postcodes or establishments at once, specifying non-US countries, and turning email capture off, type:
+and then follow the prompts to grab contact info from a single US postal code.  If you want to get the most of out of the CLI experience (powered by [Argparse](https://docs.python.org/3/library/argparse.html)), such as searching multiple postcodes or establishments at once, specifying non-US countries, and more, type:
 
 `python3 grab_contact_info.py -h`
 
@@ -65,7 +65,7 @@ After you create your CSV of contact information, you can append emails scraped 
 
 ### General Run Notes
 
-When querying via postal code, the script uses Google's Geocode API to get the proper Google Places viewwindow coordinates, then Google's Nearby Search to capture place\_id's, and then Google's Place Details to get the contact details.  To append emails, the script runs through the created CSV's _website_ column, uses **requests** and **Beautiful Soup** to scrape all the emails from the given website (and it's contact page, if found).
+When querying via postal code, the script uses Google's Geocode API to get the proper Google Places viewwindow coordinates, then Google's Nearby Search to capture place\_id's, and then Google's Place Details to get the contact details.  To append emails, the script runs through the created CSV's _website_ column, uses [Requests](https://requests.readthedocs.io/en/master/) and [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/) to scrape all the emails from the given website (and it's contact page, if found).
 
 When querying via state, the script looks through the provide postal code CSV to enumerate through postal codes of the given state.
 
