@@ -73,6 +73,8 @@ If an error occurs when attempting to access the Places or Geocoding API, the st
 
 I have not implemented proper error handling for the email scraping part of the script.  At the moment it simply catches and prints the error, skipping the website where it encountered the error when trying to find emails.
 
+Related, I am in the middle of creating unit tests, so there could very well be a bug or two that screws up your data collection.  If you run into any bugs &mdash; sorry! &mdash; please reach out and let me know.
+
 
 ## Data files and logging behavior
 
