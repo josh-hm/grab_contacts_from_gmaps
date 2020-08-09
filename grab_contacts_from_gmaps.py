@@ -332,9 +332,10 @@ def write_establishment_data(data, establishment, postal_code, country_code):
 
     df = df[df.postal_code.str.startswith(postal_code)]
     if not df.empty:
-        if not os.path.isdir(os.path.join('data', establishment, country_code)):
-            os.makedirs(os.path.join('data', establishment, country_code))
-        csv_file = os.path.join('data', establishment, country_code, '{}.csv'.format(postal_code))
+        data_folder = os.path.join('data', establishment, country_code)
+        if not os.path.isdir(data_folder):
+            os.makedirs(data_folder)
+        csv_file = os.path.join(data_folder, '{}.csv'.format(postal_code))
         df.to_csv(csv_file, index=False, encoding='utf-8')
         return True
     else:
