@@ -56,7 +56,7 @@ Load script into your interpreter, and then use one of the following methods:
 * `grab_data_for_state(establishment, state_code, country_code)`
 
 The methods should accept the establishment types listed in the [Google Places API
-documentation](https://developers.google.com/places/web-service/supported_types), the general two-letter state abbreviations for US states, and the two-letter (ISO 3166-1 alpha-2)[https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2] country codes.  If you input something wrong, there will be a print out of the accepted inputs.
+documentation](https://developers.google.com/places/web-service/supported_types), the general two-letter state abbreviations for US states, and the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country codes.  If you input something wrong, there will be a print out of the accepted inputs.
 
 After you create your CSV of contact information, you can append emails scraped from their website and contact page by passing the filepath of the newly created CSV to the following method:
 
