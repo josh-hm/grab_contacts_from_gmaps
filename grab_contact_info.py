@@ -61,18 +61,18 @@ def get_key(file_name='./.ga_key'):
         with open(file_name, 'br') as pr:
             key = pickle.load(pr)
 
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         answer = input('Google API key not found. Do you want to enter it now? '
-                       '[(y)es/(n)o) :').lower()
-        if answer.starts_with('y'):
+                       '[(y)es/(n)o)]: ').lower()
+        if answer.startswith('y'):
             key = getpass(prompt='Type / Paste API key and then press enter/return: ')
             set_key(key)
             print('Saved to filepath default, "./.ga_key"')
 
         else:
             print('Cannot run without a Google API key. '
-                  'Please try again when you have one.')
-            pass
+                  'Please try again when you have one.\n')
+            sys.exit(1)
 
     return key
 
@@ -609,14 +609,14 @@ if __name__ == '__main__':
                                  'use this option you must also specify the establishment '
                                  'type(s) with "-e"/"--establishment" and postal code(s) '
                                  'with "-p"/"--postal".\n \n'))
-    parser.add_argument('-a', '--appendOnly', nargs='?', metavar='CSV PATH',
+    parser.add_argument('-a', '--appendonly', nargs='?', metavar='CSV PATH',
                         help=str('\nIf you want to add emails to an existing contact file, '
                                  'run this option with the path to the CSV file you want to '
-                                 'add emails to.\n \n'))
-    parser.add_argument('-o', '--omitEmails', action='store_true',
+                                 'add emails to.  If used, all other options are ignored.\n \n'))
+    parser.add_argument('-o', '--omitemails', action='store_true',
                         help=str('\nUse this flag if you\'d like to skip the email scraping '
                                  'step of the process.\n \n'))
-    parser.add_argument('-f', '--fullState', action='store_true',
+    parser.add_argument('-f', '--fullstate', action='store_true',
                         help=str('\nUse this flag if you\'d like to grab the contact info from '
                                  'an entire US state.  If you use this option, you must also '
                                  'specify the establishment type(s) with "-e"/"--establishment". '
@@ -624,33 +624,40 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
-    if args.fullstate:
+    if args.appendonly:
+        append_emails_to_copy_of_csv(args.appendonly)
+
+    elif args.fullstate:
         if not all((args.statecode, args.establishment)) and args.countrycode == 'US':
             print('If you use the fullstate flag, the countrycode must be "US", you '
                   'must also use the establishment and statecode option.\n'
                   'Use "python3 grab_contacts_from_gmaps.py -h" to get more info\n')
         else:
             for establishment in args.establishment:
+                print('Working...')
                 grab_data_for_state(establishment, args.statecode, args.countrycode)
                 if not args.omitemails:
                     csv_path = os.path.join('data', establishment, args.countrycode, 
                                             '{}_all_postal_codes.csv'.format(args.statecode))
+                    print()
                     append_emails_to_copy_of_csv(csv_path)
     elif all((args.establishment, args.postalcode)):
         for establishment in args.establishment:
             for postal_code in args.postalcode:
+                print('Working...')
                 grab_data_for_postal_code(establishment, postal_code, args.countrycode)
                 if not args.omitemails:
                     csv_path = os.path.join('data', establishment, args.countrycode,
                                             '{}.csv'.format(postal_code))
+                    print()
                     append_emails_to_copy_of_csv(csv_path)
     elif any((args.establishment, args.postalcode)):
         if args.countrycode == 'US':
-            print('You must use the establishment and postal code options together.\n'
+            print('You must use the establishment and postalcode options together.\n'
                   'Use "python3 grab_contacts_from_gmaps.py -h" to get more info\n')
         else:
             print('If you use the countrycode option, you must also use the '
-                  'establishment and postal code option.\n'
+                  'establishment and postalcode option.\n'
                   'Use "python3 grab_contacts_from_gmaps.py -h" to get more info\n')
     else:
         print('\n\n' + desc + '\n\n')
@@ -659,9 +666,11 @@ if __name__ == '__main__':
         if not re.match(r'\d\d\d\d\d', postal_code):
              print('Invalid postal code. Five digit codes only\n')
              raise UnacceptedInput
-
+        print('Working...')
         grab_data_for_postal_code(establishment, postal_code, country_code=args.countrycode)
-        csv_file = os.path.join('data', establishment, args.countrycode, '{}.csv'.format(postal_code))
-        append_emails_to_copy_of_csv(csv_file)
+        if not args.omitemails:
+            print()
+            csv_file = os.path.join('data', establishment, args.countrycode, '{}.csv'.format(postal_code))
+            append_emails_to_copy_of_csv(csv_file)
         print()
     sys.exit(0)
