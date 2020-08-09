@@ -101,6 +101,6 @@ repository/
             |---[state_code]_all_postal_codes_with_emails.csv
             |   
             |---+logs/
-	            |
-	            |---logfile
+	        |
+	        |---logfile
 ```
