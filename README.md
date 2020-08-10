@@ -1,10 +1,10 @@
 # Introduction
 
-I created the code to help with a number of marketing initiatives that required getting the contact details, including emails, for various types of businesses within a postal code.
+I created the code to help with a number of marketing initiatives that required getting the contact details, including emails, for various types of businesses in a specific location, operationalized here as postal codes.
 
-The python file [grab_contacts_from_gmaps.py](grab_contacts_from_gmaps.py) can be used via a CLI or a Python interpreter to generate a CSV file containing the contact information for all establishments from Google Places for a given postal code.
+The python file [grab_contact_info.py](grab_contact_info.py) can be used via a CLI or a Python interpreter to generate a CSV file containing the contact information for all establishments from Google Places for a given postal code.
 
-To use it yourself, you will need to create your own Google API key, access to a CLI, and Python 3.
+To use it yourself, you will need to create your own Google API key, access to a CLI (or Python interpreter), and Python 3.
 
 The Google API key is free, and as of this last update to this file, The Google API key is free, and as of this last update to this file, Google gives you $200 worth of API calls to play around with. (More details in [Managing API limits and charges](#managing-api-limits-and-charges).)
 
