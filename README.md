@@ -1,6 +1,6 @@
 # Introduction
 
-I created the code to help with a number of marketing initiatives that required getting the contact details, including emails, for various types of businesses in a specific location, operationalized here as postal codes.
+I created the code to help with a number of marketing initiatives that required getting the contact details, including emails, for various types of businesses from specific locations, operationalized here as postal codes.
 
 The python file [grab_contact_info.py](grab_contact_info.py) can be used via a CLI or a Python interpreter to generate a CSV file containing the contact information for all establishments from Google Places for a given postal code.
 
