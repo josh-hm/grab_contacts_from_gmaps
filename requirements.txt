@@ -8,4 +8,4 @@ pycountry==20.7.3
 requests==2.24.0
 soupsieve==2.0.1
 tqdm==4.47.0
-urllib3==1.25.9
+urllib3==1.26.5
